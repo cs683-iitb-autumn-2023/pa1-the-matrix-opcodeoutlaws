@@ -122,13 +122,13 @@ void simd_mat_mul(double *A, double *B, double *C, int dim) {
 
 			for (int k = 0; k < dim; k+=2) {
 				// Get rows form matrix A
-				rA = _mm_load_pd(&A[i*dim + k]);
+				rA = _mm_loadu_pd(&A[i*dim + k]);
 				
 				//Get rows of matrix B
-				b1 = _mm_load_pd(&B[k*dim + j]);
-				b2 = _mm_load_pd(&B[(k+1)*dim + j]);
-				b3 = _mm_load_pd(&B[k*dim + j + 2]);
-				b4 = _mm_load_pd(&B[(k+1)*dim + j + 2]);
+				b1 = _mm_loadu_pd(&B[k*dim + j]);
+				b2 = _mm_loadu_pd(&B[(k+1)*dim + j]);
+				b3 = _mm_loadu_pd(&B[k*dim + j + 2]);
+				b4 = _mm_loadu_pd(&B[(k+1)*dim + j + 2]);
 
 				// Shuffle them to align for multiplication			
 				b1 = _mm_mul_pd(rA, _mm_shuffle_pd(b1, b2, 0x00));
@@ -141,8 +141,8 @@ void simd_mat_mul(double *A, double *B, double *C, int dim) {
 				res2 = _mm_add_pd(res2, _mm_add_pd(_mm_shuffle_pd(b3, b4, 0x00), _mm_shuffle_pd(b3, b4, 0xff)));
 			}
 			// Save results to C
-			_mm_store_pd((double*) &C[i*dim + j], res1);
-			_mm_store_pd((double*) &C[i*dim + j+2], res2);
+			_mm_storeu_pd((double*) &C[i*dim + j], res1);
+			_mm_storeu_pd((double*) &C[i*dim + j+2], res2);
 		}
 	}
 	// print_matrix(C, dim, "Actual");	
