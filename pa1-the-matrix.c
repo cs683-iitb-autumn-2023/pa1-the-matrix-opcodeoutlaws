@@ -23,6 +23,17 @@ double fRand(double fMin, double fMax) {
 	return fMin + f * (fMax - fMin);
 }
 
+void print_matrix(double* matrix, int dim, char* label) {
+	printf("\n**************%s**************\n", label);
+	for (int i = 0; i < dim; i++) {
+		for (int j = 0; j < dim; j++) {
+			printf("%f ", matrix[i * dim + j]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
+
 /**
  * @brief 		Initialize a matrix of given dimension with random values.
  * @param 		matrix 		pointer to the matrix
@@ -85,6 +96,13 @@ void normal_mat_mul(double *A, double *B, double *C, int dim) {
 */
 void blocking_mat_mul(double *A, double *B, double *C, int dim, int block_size) {
 
+}
+
+void print_reg(__m128d reg, char* label) {
+	double values[2];
+	_mm_storeu_pd(values, reg);
+	printf("reg %s: %f %f\n", label, values[0], values[1]);
+	return;
 }
 
 /**
