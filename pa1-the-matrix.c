@@ -95,6 +95,25 @@ void normal_mat_mul(double *A, double *B, double *C, int dim) {
  * 				You can assume that the matrices are square matrices.
 */
 void blocking_mat_mul(double *A, double *B, double *C, int dim, int block_size) {
+	for (int ib = 0; ib < dim; ib+=block_size){
+		for (int jb = 0; jb < dim; jb+=block_size){
+			for (int kb = 0; kb < dim; kb+=block_size){
+
+				for (int i = ib; i < (ib+block_size); i++) {
+					for (int j = jb; j < (jb+block_size); j++) {
+						for (int k = kb; k < (kb+block_size); k++) {
+							//__builtin_prefetch(&B[k+8,j]);
+							//C[i * dim + j] += A[i * dim + k] * B[k * dim + j];
+							C[i,j] += A[i,k]*B[k,j];
+							
+						}
+					}
+				}
+
+
+			}
+		}
+	}
 
 }
 
