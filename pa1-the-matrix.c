@@ -176,7 +176,65 @@ void simd_mat_mul(double *A, double *B, double *C, int dim) {
  * @note 		You can assume that the matrices are square matrices.
 */
 void prefetch_mat_mul(double *A, double *B, double *C, int dim) {
-
+	int p=dim - dim%16;
+	int s=dim%16;
+	for (int i = 0; i < dim; i++) {
+		for (int j = 0; j < dim; j++) {
+			double sum=0;
+			int k;
+			for (k = 0; k < p; k=k+16) {				
+				__builtin_prefetch(&B[k * dim + j],0,3);
+				__builtin_prefetch(&B[(k + 1)* dim + j],0,3);
+				__builtin_prefetch(&B[(k + 2) * dim + j],0,3);
+				__builtin_prefetch(&B[(k + 3) * dim + j],0,3);
+				__builtin_prefetch(&B[(k + 4) * dim + j],0,3);				
+				__builtin_prefetch(&B[(k + 5) * dim + j],0,3);
+				__builtin_prefetch(&B[(k + 6) * dim + j],0,3);
+				__builtin_prefetch(&A[i * dim + k],0,3);
+				__builtin_prefetch(&B[(k + 7) * dim + j],0,3);
+				sum += A[i * dim + k] * B[k * dim + j];
+				sum += A[i * dim + k+1] * B[(k + 1)* dim + j];
+				sum += A[i * dim + k+2] * B[(k + 2) * dim + j];
+				sum += A[i * dim + k+3] * B[(k + 3) * dim + j];
+				sum += A[i * dim + k+4] * B[(k + 4) * dim + j];
+				sum += A[i * dim + k+5] * B[(k + 5) * dim + j];
+				__builtin_prefetch(&B[(k + 8) * dim + j],0,3);
+				__builtin_prefetch(&B[(k + 9) * dim + j],0,3);
+				__builtin_prefetch(&B[(k + 10) * dim + j],0,3);
+				__builtin_prefetch(&B[(k + 11) * dim + j],0,3);
+				__builtin_prefetch(&B[(k + 12) * dim + j],0,3);
+				__builtin_prefetch(&B[(k + 13) * dim + j],0,3);
+				__builtin_prefetch(&A[i * dim + k+8],0,3);
+				__builtin_prefetch(&B[(k + 14) * dim + j],0,3);
+				__builtin_prefetch(&B[(k + 15) * dim + j],0,3);
+				sum += A[i * dim + k+6] * B[(k + 6) * dim + j];
+				sum += A[i * dim + k+7] * B[(k + 7) * dim + j];
+				sum += A[i * dim + k+8] * B[(k + 8) * dim + j];
+				sum += A[i * dim + k+9] * B[(k + 9) * dim + j];
+				
+				sum += A[i * dim + k+10] * B[(k + 10) * dim + j];
+				sum += A[i * dim + k+11] * B[(k + 11) * dim + j];
+				sum += A[i * dim + k+12] * B[(k + 12) * dim + j];
+				sum += A[i * dim + k+13] * B[(k + 13) * dim + j];
+				sum += A[i * dim + k+14] * B[(k + 14) * dim + j];
+				sum += A[i * dim + k+15] * B[(k + 15) * dim + j];
+			}
+			int r=k;
+				__builtin_prefetch(&A[i * dim + r],0,3);
+				__builtin_prefetch(&B[r * dim + j],0,3);
+				__builtin_prefetch(&B[(r+1) * dim + j],0,3);
+			for(;r<s;r+=2){
+				__builtin_prefetch(&B[(r + 2) * dim + j],0,3);
+				__builtin_prefetch(&B[(r + 3) * dim + j],0,3);
+				sum += A[i * dim + r] * B[r * dim + j];
+				sum += A[i * dim + r+1] * B[(r+1) * dim + j];	
+			}
+			if(r==s)
+				sum += A[i * dim + r-1] * B[(r-1) * dim + j];
+			
+				C[i * dim + j]=sum;
+		}
+	}
 }
 
 /**
