@@ -98,6 +98,7 @@ void blocking_mat_mul(double *A, double *B, double *C, int dim, int block_size) 
 
 }
 
+// This prints the content of a SIMD register
 void print_reg(__m128d reg, char* label) {
 	double values[2];
 	_mm_storeu_pd(values, reg);
