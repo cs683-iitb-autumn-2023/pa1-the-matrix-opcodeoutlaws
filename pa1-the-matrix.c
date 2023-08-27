@@ -113,8 +113,39 @@ void print_reg(__m128d reg, char* label) {
  * @param 		dim 		dimension of the matrices
  * @note 		You can assume that the matrices are square matrices.
 */
-void simd_mat_mul(double *A, double *B, double *C, int dim) {
+void simd_mat_mul(double *A, double *B, double *C, int dim) {	
+	__m128d rA, rB1, rB2, rB3, rB4, rB, res1, res2, b1, b2, b3, b4;
+	for (int i = 0; i < dim; i++) {
+		for (int j = 0; j < dim; j+=4) {
+			res1 = _mm_setzero_pd();
+			res2 = _mm_setzero_pd();
 
+			for (int k = 0; k < dim; k+=2) {
+				// Get rows form matrix A
+				rA = _mm_loadu_pd(&A[i*dim + k]);
+				
+				//Get rows of matrix B
+				b1 = _mm_loadu_pd(&B[k*dim + j]);
+				b2 = _mm_loadu_pd(&B[(k+1)*dim + j]);
+				b3 = _mm_loadu_pd(&B[k*dim + j + 2]);
+				b4 = _mm_loadu_pd(&B[(k+1)*dim + j + 2]);
+
+				// Shuffle them to align for multiplication			
+				b1 = _mm_mul_pd(rA, _mm_shuffle_pd(b1, b2, 0x00));
+				b2 = _mm_mul_pd(rA, _mm_shuffle_pd(b1, b2, 0xff));
+				b3 = _mm_mul_pd(rA, _mm_shuffle_pd(b3, b4, 0x00));
+				b4 = _mm_mul_pd(rA, _mm_shuffle_pd(b3, b4, 0xff));
+
+				// Reshuffle to align for addition
+				res1 = _mm_add_pd(res1, _mm_add_pd(_mm_shuffle_pd(b1, b2, 0x00), _mm_shuffle_pd(b1, b2, 0xff)));
+				res2 = _mm_add_pd(res2, _mm_add_pd(_mm_shuffle_pd(b3, b4, 0x00), _mm_shuffle_pd(b3, b4, 0xff)));
+			}
+			// Save results to C
+			_mm_storeu_pd((double*) &C[i*dim + j], res1);
+			_mm_storeu_pd((double*) &C[i*dim + j+2], res2);
+		}
+	}
+	// print_matrix(C, dim, "Actual");	
 }
 
 /**
