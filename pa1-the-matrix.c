@@ -133,7 +133,7 @@ void print_reg(__m128d reg, char* label) {
  * @note 		You can assume that the matrices are square matrices.
 */
 void simd_mat_mul(double *A, double *B, double *C, int dim) {	
-	__m128d rA, rB1, rB2, rB3, rB4, rB, res1, res2, b1, b2, b3, b4;
+	__m128d rA, res1, res2, b1, b2, b3, b4;
 	for (int i = 0; i < dim; i++) {
 		for (int j = 0; j < dim; j+=4) {
 			res1 = _mm_setzero_pd();
