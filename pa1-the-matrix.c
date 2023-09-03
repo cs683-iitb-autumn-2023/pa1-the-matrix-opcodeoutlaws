@@ -104,12 +104,11 @@ void blocking_mat_mul(double *A, double *B, double *C, int dim, int block_size) 
 
 				for (int i = ib; i < (ib+block_size); i++) {
 					for (int j = jb; j < (jb+block_size); j++) {
+						double res = C[i * dim + j];
 						for (int k = kb; k < (kb+block_size); k++) {
-							//__builtin_prefetch(&B[k+8,j]);
-							//C[i * dim + j] += A[i * dim + k] * B[k * dim + j];
-							C[i,j] += A[i,k]*B[k,j];
-							
+							res += A[i * dim + k] * B[k * dim + j];
 						}
+						C[i * dim + j] = res;
 					}
 				}
 
