@@ -47,6 +47,7 @@ void initialize_matrix(double *matrix, int rows, int cols) {
 			matrix[i * cols + j] = fRand(0.0001, 1.0000); // random values between 0 and 1
 		}
 	}
+	// print_matrix(matrix, rows, "Initialization");
 }
 
 /**
@@ -81,6 +82,7 @@ void normal_mat_mul(double *A, double *B, double *C, int dim) {
 			}
 		}
 	}
+	// print_matrix(C, dim, "Expected");
 }
 
 /**
@@ -114,6 +116,7 @@ void blocking_mat_mul(double *A, double *B, double *C, int dim, int block_size) 
 			}
 		}
 	}
+	// print_matrix(C, dim, "Actual");	
 
 }
 
@@ -133,7 +136,7 @@ void print_reg(__m128d reg, char* label) {
  * @note 		You can assume that the matrices are square matrices.
 */
 void simd_mat_mul(double *A, double *B, double *C, int dim) {	
-	__m128d rA, res1, res2, b1, b2, b3, b4;
+	__m128d rA, res1, res2, b1, b2, b3, b4, tb1, tb2, tb3, tb4;
 	for (int i = 0; i < dim; i++) {
 		for (int j = 0; j < dim; j+=4) {
 			res1 = _mm_setzero_pd();
@@ -150,14 +153,14 @@ void simd_mat_mul(double *A, double *B, double *C, int dim) {
 				b4 = _mm_loadu_pd(&B[(k+1)*dim + j + 2]);
 
 				// Shuffle them to align for multiplication			
-				b1 = _mm_mul_pd(rA, _mm_shuffle_pd(b1, b2, 0x00));
-				b2 = _mm_mul_pd(rA, _mm_shuffle_pd(b1, b2, 0xff));
-				b3 = _mm_mul_pd(rA, _mm_shuffle_pd(b3, b4, 0x00));
-				b4 = _mm_mul_pd(rA, _mm_shuffle_pd(b3, b4, 0xff));
+				tb1 = _mm_mul_pd(rA, _mm_shuffle_pd(b1, b2, 0x00));
+				tb2 = _mm_mul_pd(rA, _mm_shuffle_pd(b1, b2, 0xff));
+				tb3 = _mm_mul_pd(rA, _mm_shuffle_pd(b3, b4, 0x00));
+				tb4 = _mm_mul_pd(rA, _mm_shuffle_pd(b3, b4, 0xff));
 
 				// Reshuffle to align for addition
-				res1 = _mm_add_pd(res1, _mm_add_pd(_mm_shuffle_pd(b1, b2, 0x00), _mm_shuffle_pd(b1, b2, 0xff)));
-				res2 = _mm_add_pd(res2, _mm_add_pd(_mm_shuffle_pd(b3, b4, 0x00), _mm_shuffle_pd(b3, b4, 0xff)));
+				res1 = _mm_add_pd(res1, _mm_add_pd(_mm_shuffle_pd(tb1, tb2, 0x00), _mm_shuffle_pd(tb1, tb2, 0xff)));
+				res2 = _mm_add_pd(res2, _mm_add_pd(_mm_shuffle_pd(tb3, tb4, 0x00), _mm_shuffle_pd(tb3, tb4, 0xff)));
 			}
 			// Save results to C
 			_mm_storeu_pd((double*) &C[i*dim + j], res1);
@@ -273,6 +276,7 @@ void prefetch_mat_mul(double *A, double *B, double *C, int dim) {
 				C[i * dim + j]=sum;
 		}
 	}
+	// print_matrix(C, dim, "Actual");	
 }
 
 /**
