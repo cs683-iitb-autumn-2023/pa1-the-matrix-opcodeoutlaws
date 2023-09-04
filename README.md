@@ -55,17 +55,17 @@ and combination of these techniques.
 
 ---
 ## Task 2: SIMD instructions
-### Specifics
+### Implementation
 #### SIMD Registers
-We are using 128 bits wide registers for implementing SIMD instructions. One double is of 64 bits in size. Hence we can store two doubles adjacent to each other in a 64 bit register. Here's how it looks:
+- We are using 128 bits wide registers for implementing SIMD instructions. One double is of 64 bits in size. Hence we can store two doubles adjacent to each other in a 64 bit register. Here's how it looks:
 
 ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/d5b47259-464c-4fa0-b2c5-a79b6944ab99)
 
 
 #### SIMD Instructions
-Here we'll see how SIMD multiplication works when we have two `_m128d` registers containing a total of four doubles.
+- Here we'll see how SIMD multiplication works when we have two `_m128d` registers containing a total of four doubles.
 
-![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/7f2f49d2-2b00-4f35-9b16-86c7a78ae041)
+  ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/7f2f49d2-2b00-4f35-9b16-86c7a78ae041)
 
 
 Here is the list of SIMD functions we are using for our implementation:
@@ -79,7 +79,7 @@ Here is the list of SIMD functions we are using for our implementation:
 Informaton about each of them can be found here: https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html
 
 #### Implementation
-![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/2b852f03-8f50-485b-a864-45ed41abd267)
+  ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/2b852f03-8f50-485b-a864-45ed41abd267)
 Above is a snippet of how C1 and C2 is calculated in one step.
 - We first load A11, A12 in one `_m128d` register. Alongside we also load A21, A22 in another `_m128d` register. This is done using the `_mm_loadu_pd`.
 - We load 16 elements from matrix B into 8 `_m128d` registers.
@@ -89,12 +89,12 @@ Above is a snippet of how C1 and C2 is calculated in one step.
 - We have applied loop unrolling to get some additional boost in performance.
 - Finally we store the result to C11, C12, C13 & C14 as two registers using `_mm_storeu_pd`
 
-#### Execution time & Speedup
+#### Observations
 
 ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/142027995/453cd3e1-2aa7-4f40-9a56-c65c55b43b52)
 
 
-#### Observations
+#### Analysis
 
 
 #### Limitations
@@ -109,7 +109,7 @@ Above is a snippet of how C1 and C2 is calculated in one step.
 
 ---
 ## Bonus Task 1: Blocked Matrix Multiplication + SIMD instructions
-This implementation takes advantage of both: blocking and simd instructions. We aim to reduce the number of multiplication operations and also reduce the miss rate with this implementation.
+- This implementation takes advantage of both: blocking and simd instructions. We aim to reduce the number of multiplication operations and also reduce the miss rate with this implementation.
 
 #### Implementation
 - We have started with the approach that we used for blocking
