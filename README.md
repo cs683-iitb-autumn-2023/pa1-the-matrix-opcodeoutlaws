@@ -50,7 +50,15 @@ Above is a snippet of how C1 and C2 is calculated in one step.
 - Finally we store the result to C11, C12, C13 & C14 as two registers using `_mm_storeu_pd`
 
 #### Execution time & Speedup
-We have seen speedup ranging from 3x to 6x on different executions. On average the speed up is about `3.5`.
+Below are the average speedups for different dimensions:
+| Dimension | Speedup |
+|-----------|---------|
+| 100       | 3.5     |
+| 200       | 2.3     |
+| 800       | 1.8     |
+
+#### Limitations
+- Because of some loop unrolling and the way we have accessed elements using `_mm_storeu_pd`, the matrix multiplication works for dimensions which are multiples of 4.
 
 <br>
 
