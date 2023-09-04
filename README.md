@@ -21,12 +21,14 @@ and combination of these techniques.
 #### SIMD Registers
 We are using 128 bits wide registers for implementing SIMD instructions. One double is of 64 bits in size. Hence we can store two doubles adjacent to each other in a 64 bit register. Here's how it looks:
 
-![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/d8dc7b55-bf40-43b4-ac1e-56314aa375ab)
+![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/d5b47259-464c-4fa0-b2c5-a79b6944ab99)
+
 
 #### SIMD Instructions
 Here we'll see how SIMD multiplication works when we have two `_m128d` registers containing a total of four doubles.
 
-![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/e6c2c930-b961-4868-b713-b122b7387529)
+![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/7f2f49d2-2b00-4f35-9b16-86c7a78ae041)
+
 
 Here is the list of SIMD functions we are using for our implementation:
 1. `_mm_setzero_pd`
