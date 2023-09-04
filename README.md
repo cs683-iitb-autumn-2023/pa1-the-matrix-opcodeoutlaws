@@ -58,7 +58,7 @@ Informaton about each of them can be found here: https://www.intel.com/content/w
 ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/2b852f03-8f50-485b-a864-45ed41abd267)
 Above is a snippet of how C1 and C2 is calculated in one step.
 - We first load A11, A12 in one `_m128d` register. Alongside we also load A21, A22 in another `_m128d` register. This is done using the `_mm_loadu_pd`.
-- We load 16 elements from matrix B into 8 `_128d` registers.
+- We load 16 elements from matrix B into 8 `_m128d` registers.
 - We need to shuffle the registers to align them for multiplication as shown in above figure. We use  `_mm_shuffle_pd` for the same.
 - Next step is to multiply the aligned registers. This gives us multiplication of `A11` × `B11` and `A12` × `B12`, `A11` × `B21` and `A12` × `B22` and so on.
 - We realign the registers using `_mm_shuffle_pd` for addition so that we can get `A11 × B11`+ `A12 × B12` and so on.
@@ -66,12 +66,10 @@ Above is a snippet of how C1 and C2 is calculated in one step.
 - Finally we store the result to C11, C12, C13 & C14 as two registers using `_mm_storeu_pd`
 
 #### Execution time & Speedup
-Below are the average speedups for different dimensions:
-| Dimension | Speedup |
-|-----------|---------|
-| 100       | 3.5     |
-| 200       | 2.3     |
-| 800       | 1.8     |
+
+
+#### Observations
+
 
 #### Limitations
 - Because of some loop unrolling and the way we have accessed elements using `_mm_storeu_pd`, the matrix multiplication works for dimensions which are multiples of 4.
@@ -85,7 +83,22 @@ Below are the average speedups for different dimensions:
 
 ---
 ## Bonus Task 1: Blocked Matrix Multiplication + SIMD instructions
+This implementation takes advantage of both: blocking and simd instructions. We aim to reduce the number of multiplication operations and also reduce the miss rate with this implementation.
 
+#### Implementation
+- We have started with the approach that we used for blocking
+- And we changed the actual matrix multiplication taking place in the innermost for loop of blocking implementation with SIMD based multiplication.
+- Some amount of loop unrolling is also done to acheive greater performance.
+
+#### Speedup and performance
+
+
+#### Observations
+
+
+#### Limitations
+- Here we have limitations of SIMD implementation intersected with limitations of blocking implementation.
+- The dimension of matrix should be divisible by 4 and also be divisible by `BLOCK_SIZE`. In order to satisfy the requirement of optimizing matrix multiplication of dimensions 100, 200 and 800, we have decided the `BLOCK_SIZE` to be 20.
 <br>
 
 ---
