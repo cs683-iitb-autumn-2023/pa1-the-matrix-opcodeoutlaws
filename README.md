@@ -26,8 +26,7 @@ We are using 128 bits wide registers for implementing SIMD instructions. One dou
 #### SIMD Instructions
 Here we'll see how SIMD multiplication works when we have two `_m128d` registers containing a total of four doubles.
 
-![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/2e8beddc-b533-4f3c-a41c-73689dd41c6f)
-
+![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/e6c2c930-b961-4868-b713-b122b7387529)
 
 Here is the list of SIMD functions we are using for our implementation:
 1. `_mm_setzero_pd`
@@ -35,12 +34,23 @@ Here is the list of SIMD functions we are using for our implementation:
 3. `_mm_mul_pd`
 4. `_mm_add_pd`
 5. `_mm_shuffle_pd`
+6. `_mm_storeu_pd`
 
 Informaton about each of them can be found here: https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html
 
 #### Implementation
-![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/2a102fcc-6553-4ebd-b08c-792f8733c9ee)
+![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/2b852f03-8f50-485b-a864-45ed41abd267)
+Above is a snippet of how C1 and C2 is calculated in one step.
+- We first load A11, A12 in one `_m128d` register. Alongside we also load A21, A22 in another `_m128d` register. This is done using the `_mm_loadu_pd`.
+- We load 16 elements from matrix B into 8 `_128d` registers.
+- We need to shuffle the registers to align them for multiplication as shown in above figure. We use  `_mm_shuffle_pd` for the same.
+- Next step is to multiply the aligned registers. This gives us multiplication of `A11` × `B11` and `A12` × `B12`, `A11` × `B21` and `A12` × `B22` and so on.
+- We realign the registers using `_mm_shuffle_pd` for addition so that we can get `A11 × B11`+ `A12 × B12` and so on.
+- We have applied loop unrolling to get some additional boost in performance.
+- Finally we store the result to C11, C12, C13 & C14 as two registers using `_mm_storeu_pd`
 
+#### Execution time & Speedup
+We have seen speedup ranging from 3x to 6x on different executions. On average the speed up is about `3.5`.
 
 <br>
 
