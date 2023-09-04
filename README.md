@@ -13,8 +13,9 @@ and combination of these techniques.
 ---
 ## Task 1: Blocked Matrix Multiplication
 ### Implementation:
-- We have divided the matrices into small block and trying to reuse the blocks fetched in the cache
-- To implement it we are using 6 for loops, where first three loops select which blocks to multiply and last three loops use normal matrix multiplication to multiply the selected blocks.
+#### Basic Idea
+- We have divided the matrices into small tiles and trying to reuse the blocks fetched in the cache
+- To implement it we are using 6 for loops, where first three loops select which tiles to multiply and last three loops use normal matrix multiplication to multiply the selected tiles.
 #### VS Normal Matrix Multiplication
 - In normal matrix multiplication, while performing C = A * B, we access B in column-major order. If the size of a column is greater than the cache size whatever block of matrix B that will be brought into the cache while fetching elements of matrix B will be replaced and we will be facing a cache miss for every element access of matrix B
   
@@ -22,9 +23,23 @@ and combination of these techniques.
 
 - The block that were brought into the cache while accessing B are not used expect for the 1st element. So the idea of Blocked matrix multiplication is to use the other elements of that block before that block is evicted from the cache.  
 #### Miss rate reduction using Blocking
-- Now in blocking the martix will be divided into small blocks (lets say of size B) and these will blocks will be multiplied with each other instead of whole matrix.
+- Now in blocking the martix will be divided into small tiles (lets say of size B) and these tiles will be multiplied with each other instead of whole matrix.
 
   ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/142027995/45c4b7ea-f108-49e5-9944-ad765929dd9b)
+
+- Now to compute a tile in the result matrix C, consider a tile C<sub>i,j</sub> ,
+
+  We multipy i<sup>th</sup> row tiles of matrix A with j<sup>th</sup> column tiles of matrix B
+
+  As seen from the above image, to compute tile  C<sub>1,1</sub>,
+
+     C<sub>1,1</sub> =  A<sub>1,1</sub> x  B<sub>1,1</sub> +  A<sub>1,2</sub> x B<sub>2,1</sub>
+
+  ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/142027995/87b3aa52-2b08-426a-91b0-68466676c49c)
+  
+
+- Now while accessing a tile of B in column major order, the blocks that are fetched in the cache won't be evicted till the whole tile is accessed. This is because the tile size will be small and fit completely into the cache.
+- So while accessing the later elements (2<sup>nd</sup> column onwards) of that tile in column major order we won't get a miss as the blocks are already in the cache. This is how the blocks brought into the cache while accessing the tile of B are reused and will reduce the cache miss rate.  
 
 
 <br>
