@@ -13,12 +13,12 @@ and combination of these techniques.
 ---
 ## Task 1: Blocked Matrix Multiplication
 ### Implementation:
-#### Basic Idea
+#### Basic Idea of blocking/tilling
 - We have divided the matrices into small tiles and trying to reuse the blocks fetched in the cache
 - To implement it we are using 6 for loops, where first three loops select which tiles to multiply and last three loops use normal matrix multiplication to multiply the selected tiles.
-#### VS Normal Matrix Multiplication
+#### Comparison with Normal Matrix Multiplication
 - In normal matrix multiplication, while performing C = A * B, we access B in column-major order. If the size of a column is greater than the cache size whatever block of matrix B that will be brought into the cache while fetching elements of matrix B will be replaced and we will be facing a cache miss for every element access of matrix B
-  
+
   ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/142027995/ede6508f-0696-43a7-9d86-9fdf92642ae7)
 
 - The block that were brought into the cache while accessing B are not used expect for the 1st element. So the idea of Blocked matrix multiplication is to use the other elements of that block before that block is evicted from the cache.  
@@ -36,11 +36,20 @@ and combination of these techniques.
      C<sub>1,1</sub> =  A<sub>1,1</sub> x  B<sub>1,1</sub> +  A<sub>1,2</sub> x B<sub>2,1</sub>
 
   ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/142027995/87b3aa52-2b08-426a-91b0-68466676c49c)
+ 
   
 
 - Now while accessing a tile of B in column major order, the blocks that are fetched in the cache won't be evicted till the whole tile is accessed. This is because the tile size will be small and fit completely into the cache.
 - So while accessing the later elements (2<sup>nd</sup> column onwards) of that tile in column major order we won't get a miss as the blocks are already in the cache. This is how the blocks brought into the cache while accessing the tile of B are reused and will reduce the cache miss rate.  
 
+### Observations:
+- We have recorded the execution time, data cache miss rate and speed up for different matrix sizes and represented in the table below:
+  
+  ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/142027995/efc86f32-0df8-4255-8301-fa0a5cac72a7)
+
+### Analysis:
+- It can seen from the table that we have a significant decrease in the miss rate specially for matrix of dimension 800. This is because the single column of martix will be very large. And each element access will bring a block (of size 64B) into the cache. So accessing just one column of the matrix B will be very large (800 * 64B) and won't fit completely in the cache. So the blocks fetched will be evicted and would result in unnecessary cache misses.
+- This won't happen for matrix of dimension 100 and 200 as their coloumns will be of smaller size. Because of this we can see a high miss rate (4.5 %) for normal matrix multiplication in 800 dimension matrix. Blocking reduces the miss rate to 0.1 % in each case by reusing the fetched blocks and gives a good speedup. 
 
 <br>
 
@@ -82,6 +91,8 @@ Above is a snippet of how C1 and C2 is calculated in one step.
 
 #### Execution time & Speedup
 
+![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/142027995/453cd3e1-2aa7-4f40-9a56-c65c55b43b52)
+
 
 #### Observations
 
@@ -109,6 +120,8 @@ This implementation takes advantage of both: blocking and simd instructions. We 
 
 
 #### Observations
+
+![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/142027995/36665387-0a41-425c-b558-934f60e58384)
 
 
 #### Limitations
