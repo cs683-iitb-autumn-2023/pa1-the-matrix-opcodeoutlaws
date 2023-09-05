@@ -119,7 +119,10 @@ Software prefetching uses explicit prefetch instruction that needs to be inserte
 
 
 #### Analysis
-- We have 
+- There is a decent speedup, however the effect is majorly beacause of loop unrolling.
+- Loop unrolling reduces the number of instructions being executed, thus reduing the total cycles spent while doing so. All this at an expense of slight reduction in code readability.
+- We see the number if I refs has decreased in the prefetching implementation despite the fact that we aare adding the prefetch function calls.
+- Upon refering multiple sources we have found that the `__builtin_prefetch` does not affect the performance that much (although not using it properly can reduce the performance) because of the default optimizations of the compiler. (https://stackoverflow.com/questions/8460563/builtin-prefetch-how-much-does-it-read/8460606#8460606)
 
 <br>
 
