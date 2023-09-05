@@ -385,11 +385,13 @@ void simd_prefetch_mat_mul(double *A, double *B, double *C, int dim) {
 			res2 = _mm_setzero_pd();
 
 			for (int k = 0; k < dim; k+=4) {
-				__builtin_prefetch(&A[(i)*dim + k], 0, 3);
-				__builtin_prefetch(&B[(k)*dim + j], 0, 3);
-				__builtin_prefetch(&B[(k+1)*dim + j], 0, 3);
-				__builtin_prefetch(&B[(k+2)*dim + j], 0, 3);
-				__builtin_prefetch(&B[(k+3)*dim + j], 0, 3);				
+				if (k + 4 < dim) {
+					__builtin_prefetch(&A[(i+1)*dim + k], 0, 3);
+					__builtin_prefetch(&B[(k+4)*dim + j], 0, 3);
+					__builtin_prefetch(&B[(k+5)*dim + j], 0, 3);
+					__builtin_prefetch(&B[(k+6)*dim + j], 0, 3);
+					__builtin_prefetch(&B[(k+7)*dim + j], 0, 3);
+				}
 				
 				// Get rows form matrix A
 				rA1 = _mm_loadu_pd(&A[i*dim + k]);
@@ -456,11 +458,13 @@ void blocking_simd_prefetch_mat_mul(double *A, double *B, double *C, int dim, in
 						res2 = _mm_loadu_pd(&C[i*dim + j+2]);
 
 						for (int k = kb; k < (kb+block_size); k+=4) {
-							__builtin_prefetch(&A[(i)*dim + k], 0, 3);
-							__builtin_prefetch(&B[(k)*dim + j], 0, 3);
-							__builtin_prefetch(&B[(k+1)*dim + j], 0, 3);
-							__builtin_prefetch(&B[(k+2)*dim + j], 0, 3);
-							__builtin_prefetch(&B[(k+3)*dim + j], 0, 3);
+							if (k + 4 < (kb + block_size)) {
+								__builtin_prefetch(&A[(i+1)*dim + k], 0, 3);
+								__builtin_prefetch(&B[(k+4)*dim + j], 0, 3);
+								__builtin_prefetch(&B[(k+5)*dim + j], 0, 3);
+								__builtin_prefetch(&B[(k+6)*dim + j], 0, 3);
+								__builtin_prefetch(&B[(k+7)*dim + j], 0, 3);
+							}
 							// Get rows form matrix A
 							rA1 = _mm_loadu_pd(&A[i*dim + k]);
 							rA2 = _mm_loadu_pd(&A[i*dim + k + 2]);
