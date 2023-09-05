@@ -181,13 +181,45 @@ Software prefetching uses explicit prefetch instruction that needs to be inserte
 
 ---
 ## Bonus Task 3: SIMD instructions + Software Prefetching
+### Implementation
+- This combines the idea of software prefetching and SIMD instructions.
+- We aim to fetch the blocks that are accessed in current loop at the begin before the elements are actually accessed. We expect this would improve the cache hits when performing the multiplications.
+
+#### Observation
+![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/b9a5cc72-cffe-4cea-9f37-f20afc28b465)
+
+#### Analysis
+- The performance is not all that different from SIMD multiplications.
+- Given our assumptions in the previous sections, we have not seen a significant improvement after adding software prefetching.
+
+### Limitations
+- Given this uses the logic from SIMD matrix multiplication code, this implementation only works for matrix dimensions which are multiples of 4.
 
 <br>
 
 ---
 ## Bonus Task 4: Bloced Matrix Multiplication + SIMD instructions + Software Prefetching
+### Implementation
+- Here we combine all the ideas for optimization
+- We aim to reduce the miss rates significantly beacause of blocking while prefetching the blocks which are about to be accessed all the while reducing the total number of actual multiplication operations.
 
+
+#### Observation
+![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/3f5b0764-68f7-4a9e-ab8b-20769c1b6bbc)
+
+#### Analysis
+- The performance is not very different from SIMD+Blocking as we have seen this recurring pattern of software prefetching not providing a significant boost.
+- The speedup decreases as the matrix dimension increases.
+
+#### Limitations
+- Here we have limitations of SIMD implementation intersected with limitations of blocking implementation.
+- The dimension of matrix should be divisible by 4 and also be divisible by `BLOCK_SIZE`. In order to satisfy the requirement of optimizing matrix multiplication of dimensions 100, 200 and 800, we have decided the `BLOCK_SIZE` to be 20.
 <br>
 
----
-All the best! :smile:
+## All optimizations compared
+![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/1e6d10ff-6a46-445c-9b8b-37d7c0b9a227)
+
+
+- Here we can observe that we have acheived the best speedup at matrix dimension 100 for BLOCKING+SIMD.
+- Even though we expected the BLOCKING+SIMD+PREFETCHING to provide the best speedup, we have observed that the PREFETCH has been a limiting factor because of pre-optimizations from compiler.
+- The speedup decreases as the matrix dimension increases. We estimate this to be beacause of the fact that as the dimension increases we start receiving more and more page faults as the data that needs to be brought into the cache is so huge. Hence the speedup factor falls short against the large penalties of page faults.
