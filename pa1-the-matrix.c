@@ -48,7 +48,6 @@ void initialize_matrix(double *matrix, int rows, int cols) {
 			matrix[i * cols + j] = fRand(0.0001, 1.0000); // random values between 0 and 1
 		}
 	}
-	// print_matrix(matrix, rows, "Initialization");
 }
 
 /**
@@ -83,7 +82,6 @@ void normal_mat_mul(double *A, double *B, double *C, int dim) {
 			}
 		}
 	}
-	// print_matrix(C, dim, "Expected");
 }
 
 /**
@@ -116,7 +114,6 @@ void blocking_mat_mul(double *A, double *B, double *C, int dim, int block_size) 
 			}
 		}
 	}
-	// print_matrix(C, dim, "Actual");	
 
 }
 
@@ -195,8 +192,7 @@ void simd_mat_mul(double *A, double *B, double *C, int dim) {
 			_mm_storeu_pd((double*) &C[i*dim + j], res1);
 			_mm_storeu_pd((double*) &C[i*dim + j+2], res2);
 		}
-	}
-	// print_matrix(C, dim, "Actual");		
+	}	
 }
 
 /**
@@ -247,8 +243,7 @@ void prefetch_mat_mul(double *A, double *B, double *C, int dim) {
 
 				C[i * dim + j]=sum;
 		}
-	}
-	// print_matrix(C, dim, "Actual");	
+	}	
 }
 
 /**
@@ -268,8 +263,6 @@ void blocking_simd_mat_mul(double *A, double *B, double *C, int dim, int block_s
 
 				for (int i = ib; i < (ib+block_size); i++) {
 					for (int j = jb; j < (jb+block_size); j+=4) {
-						// double res = C[i * dim + j];
-
 						res1 = _mm_loadu_pd(&C[i*dim + j]);
 						res2 = _mm_loadu_pd(&C[i*dim + j+2]);
 
@@ -306,12 +299,7 @@ void blocking_simd_mat_mul(double *A, double *B, double *C, int dim, int block_s
 							
 							res1 = _mm_add_pd(res1, _mm_add_pd(_mm_shuffle_pd(tb5, tb6, 0x00), _mm_shuffle_pd(tb5, tb6, 0xff)));
 							res2 = _mm_add_pd(res2, _mm_add_pd(_mm_shuffle_pd(tb7, tb8, 0x00), _mm_shuffle_pd(tb7, tb8, 0xff)));
-							
-							// res += A[i * dim + k] * B[k * dim + j];
-
-
 						}
-						// C[i * dim + j] = res;
 						_mm_storeu_pd((double*) &C[i*dim + j], res1);
 						_mm_storeu_pd((double*) &C[i*dim + j+2], res2);
 					}
@@ -431,7 +419,6 @@ void simd_prefetch_mat_mul(double *A, double *B, double *C, int dim) {
 			_mm_storeu_pd((double*) &C[i*dim + j+2], res2);
 		}
 	}
-	// print_matrix(C, dim, "Actual");	
 }
 
 /**
@@ -452,8 +439,6 @@ void blocking_simd_prefetch_mat_mul(double *A, double *B, double *C, int dim, in
 
 				for (int i = ib; i < (ib+block_size); i++) {
 					for (int j = jb; j < (jb+block_size); j+=4) {
-						// double res = C[i * dim + j];
-
 						res1 = _mm_loadu_pd(&C[i*dim + j]);
 						res2 = _mm_loadu_pd(&C[i*dim + j+2]);
 
@@ -497,12 +482,7 @@ void blocking_simd_prefetch_mat_mul(double *A, double *B, double *C, int dim, in
 							
 							res1 = _mm_add_pd(res1, _mm_add_pd(_mm_shuffle_pd(tb5, tb6, 0x00), _mm_shuffle_pd(tb5, tb6, 0xff)));
 							res2 = _mm_add_pd(res2, _mm_add_pd(_mm_shuffle_pd(tb7, tb8, 0x00), _mm_shuffle_pd(tb7, tb8, 0xff)));
-							
-							// res += A[i * dim + k] * B[k * dim + j];
-
-
 						}
-						// C[i * dim + j] = res;
 						_mm_storeu_pd((double*) &C[i*dim + j], res1);
 						_mm_storeu_pd((double*) &C[i*dim + j+2], res2);
 					}
