@@ -113,6 +113,10 @@ Software prefetching uses explicit prefetch instruction that needs to be inserte
 - To bring blocks ahead of their access we inserted prefetch instructions 1 iteration before the block access.
 
 #### Observation
+- We have recorded the execution time, data cache miss rate and speed up for different matrix sizes and represented in the table below:
+  
+  ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/142027995/2694bc71-d35b-4646-acc6-dd1ea30ca50e)
+
 
 #### Analysis
 - We have 
@@ -143,6 +147,35 @@ Software prefetching uses explicit prefetch instruction that needs to be inserte
 
 ---
 ## Bonus Task 2: Blocked Matrix Multiplication + Software Prefetching
+
+### Implementation:
+#### Basic Idea
+- Here we are using software prefetching along with blocked matrix multiplication. In blocked multiplication we already reduced the miss rate by reusing the blocks of matrix B.
+- Here we try to prefetch the blocks in a tile of both matrices A and B to have more decrease in the miss rate.
+
+#### Miss rate reduction using blocking & prefetching
+- Now to access a tile (lets say of size B x B) of either matrix A or matrix B, we get B<sup>2</sup>/8 misses.
+- We here try to further decrease this misses through prefetching.
+  
+  ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/142027995/dc7dc911-b05e-4da9-929a-2fc75e03a4dc)
+
+
+- The cache line size of our machine is 64 Bytes and each element (type double) is 8 bytes, so every cache line will contain 8 elements.
+- We prefetch the first element of each block so we get the whole block into the cache before we try to access the elements. We do this by unrolling the loop and use __builtin_prefetch() for the 8<sup>th</sup> element in the current iteration and fetch 0<sup>th</sup> to 7<sup>th</sup> element normally. 
+- So in the next iteration we already have the 8th element and so here we prefetch the 16<sup>th</sup> element and fetch elements 9<sup>th</sup> to 15<sup>th</sup> (as they are already loaded in the cache beacause of the prefetch in the previous iteration) and so on to the next iteration.
+- So we should get miss only for first 1<sup>st</sup> block and other all are prefetched.
+
+### Observation:
+- We have recorded the execution time, data cache miss rate and speed up for different matrix sizes and represented in the table below:
+
+  ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/142027995/60c1f79a-8048-4e67-bba6-54e56730bd30)
+
+
+### Analysis:
+- Because of blocking we get a good improvement in the miss rate compared to normal matrix multiplication.
+- As prefetch adds two extra prefetch instructions in the loop, we get an increase in total instruction references.
+- Assuming that either becasue of compiler optimization or hardware prefetching we dont see the effect of or __builtin_prefetch() and the performance we see is not so different from that of blocking.
+
 
 <br>
 
