@@ -104,6 +104,18 @@ Above is a snippet of how C1 and C2 is calculated in one step.
 
 ---
 ## Task 3: Software Prefetching
+Software prefetching uses explicit prefetch instruction that needs to be inserted in the code. It can be used to minimize cache miss latency by prefetching the data blocks before their access. 
+
+#### Implementation
+ - `__builtin_prefetch` is a function provided by GCC that needs 3 arguments(memory address, [`rw`](## "pass 0 for read or 1 for write/Default value is 0"), [`locality`](## "value can range between 0 to 3  0: no need of block in future  1: block should reside in l3 cache after use  2: block should reside in l2 & l3 cache after use  3: block should reside in l1,l2 & l3 cache after use/Default value is 3")) among which rw & locality options are optional.
+- First we did loop unrolling such that more prefetch instruction can be inserted in the code.
+- We have used `__builtin_prefetch` instruction in such a way that needed blocks should be brought to l1 cache ahead of their access.
+- To bring blocks ahead of their access we inserted prefetch instructions 1 iteration before the block access.
+
+#### Observation
+
+#### Analysis
+
 
 <br>
 
