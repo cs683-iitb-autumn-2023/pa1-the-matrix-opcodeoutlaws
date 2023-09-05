@@ -193,7 +193,8 @@ This implementation takes advantage of both: blocking and simd instructions. We 
 ### Observation:
 - We have recorded the execution time, data cache miss rate and speed up for different matrix sizes and represented in the table below:
   
-  ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/b9a5cc72-cffe-4cea-9f37-f20afc28b465)
+  ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/142027995/cf9a8eac-6551-4ea5-9dfd-cdf3267bbc74)
+  
 
 ### Analysis:
 - The performance is not all that different from SIMD multiplications.
@@ -214,7 +215,8 @@ This implementation takes advantage of both: blocking and simd instructions. We 
 ### Observation:
 - We have recorded the execution time, data cache miss rate and speed up for different matrix sizes and represented in the table below:
   
-  ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/48720143/3f5b0764-68f7-4a9e-ab8b-20769c1b6bbc)
+  ![image](https://github.com/cs683-iitb-autumn-2023/pa1-the-matrix-opcodeoutlaws/assets/142027995/fc42e804-83c4-4e6a-9328-16d9d0b05e42)
+
 
 ### Analysis:
 - The performance is not very different from SIMD+Blocking as we have seen this recurring pattern of software prefetching not providing a significant boost.
