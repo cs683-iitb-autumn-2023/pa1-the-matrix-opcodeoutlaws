@@ -95,7 +95,7 @@ Above is a snippet of how C1 and C2 is calculated in one step.
 
 
 #### Analysis
-
+- First we tried to use more prefetch instruction in the 3rd for loop just before their access 
 
 #### Limitations
 - Because of some loop unrolling and the way we have accessed elements using `_mm_storeu_pd`, the matrix multiplication works for dimensions which are multiples of 4.
@@ -115,7 +115,7 @@ Software prefetching uses explicit prefetch instruction that needs to be inserte
 #### Observation
 
 #### Analysis
-
+- We have 
 
 <br>
 
