@@ -539,7 +539,6 @@ int main(int argc, char **argv) {
 		double *A = (double *)malloc(matrix_dim * matrix_dim * sizeof(double));
 		double *B = (double *)malloc(matrix_dim * matrix_dim * sizeof(double));
 		double *C = (double *)calloc(matrix_dim * matrix_dim, sizeof(double));
-		double *D = (double *)calloc(matrix_dim * matrix_dim, sizeof(double));
 
 		// initialize random seed
 		srand(time(NULL));
@@ -560,119 +559,111 @@ int main(int argc, char **argv) {
 		// Task 1: perform blocking matrix multiplication
 
 		// initialize result matrix to 0
-		initialize_result_matrix(D, matrix_dim, matrix_dim);
+		initialize_result_matrix(C, matrix_dim, matrix_dim);
 		
 		t_blocking_mult = clock();
-		blocking_mat_mul(A, B, D, matrix_dim, BLOCK_SIZE);
+		blocking_mat_mul(A, B, C, matrix_dim, BLOCK_SIZE);
 		t_blocking_mult = clock() - t_blocking_mult;
 
 		time_blocking_mult = ((double)t_blocking_mult) / CLOCKS_PER_SEC; // in seconds
 		printf("Blocking matrix multiplication took %f seconds to execute \n", time_blocking_mult);
 		printf("Normalized performance: %f \n\n", time_normal_mult / time_blocking_mult);
-		// verify_correctness(C, D, matrix_dim);
 	#endif
 
 	#ifdef OPTIMIZE_SIMD
 		// Task 2: perform matrix multiplication with SIMD instructions
 		// initialize result matrix to 0
 
-		initialize_result_matrix(D, matrix_dim, matrix_dim);
+		initialize_result_matrix(C, matrix_dim, matrix_dim);
 		
 		t_simd_mult = clock();
-		simd_mat_mul(A, B, D, matrix_dim);
+		simd_mat_mul(A, B, C, matrix_dim);
 		t_simd_mult = clock() - t_simd_mult;
 
 		time_simd_mult = ((double)t_simd_mult) / CLOCKS_PER_SEC; // in seconds
 		printf("SIMD matrix multiplication took %f seconds to execute \n", time_simd_mult);
 		printf("Normalized performance: %f \n\n", time_normal_mult / time_simd_mult);
-		// verify_correctness(C, D, matrix_dim);
 	#endif
 
 	#ifdef OPTIMIZE_PREFETCH
 		// Task 3: perform matrix multiplication with prefetching
 		
 		// initialize result matrix to 0
-		initialize_result_matrix(D, matrix_dim, matrix_dim);		
+		initialize_result_matrix(C, matrix_dim, matrix_dim);		
 
 		t_prefetch_mult = clock();
-		prefetch_mat_mul(A, B, D, matrix_dim);
+		prefetch_mat_mul(A, B, C, matrix_dim);
 		t_prefetch_mult = clock() - t_prefetch_mult;
 
 		time_prefetch_mult = ((double)t_prefetch_mult) / CLOCKS_PER_SEC; // in seconds
 		printf("Prefetching matrix multiplication took %f seconds to execute \n", time_prefetch_mult);
 		printf("Normalized performance: %f \n\n", time_normal_mult / time_prefetch_mult);
-		// verify_correctness(C, D, matrix_dim);
 	#endif
 
 	#ifdef OPTIMIZE_BLOCKING_SIMD
 		// Bonus Task 1: perform matrix multiplication using blocking along with SIMD instructions
 		
 		// initialize result matrix to 0
-		initialize_result_matrix(D, matrix_dim, matrix_dim);
+		initialize_result_matrix(C, matrix_dim, matrix_dim);
 		
 		t_blocking_simd_mult = clock();
-		blocking_simd_mat_mul(A, B, D, matrix_dim, BLOCK_SIZE);
+		blocking_simd_mat_mul(A, B, C, matrix_dim, BLOCK_SIZE);
 		t_blocking_simd_mult = clock() - t_blocking_simd_mult;
 
 		time_blocking_simd_mult = ((double)t_blocking_simd_mult) / CLOCKS_PER_SEC; // in seconds
 		printf("Blocking with SIMD matrix multiplication took %f seconds to execute \n", time_blocking_simd_mult);
 		printf("Normalized performance: %f \n\n", time_normal_mult / time_blocking_simd_mult);
-		// verify_correctness(C, D, matrix_dim);
 	#endif
 
 	#ifdef OPTIMIZE_BLOCKING_PREFETCH
 		// Bonus Task 2: perform matrix multiplication using blocking along with software prefetching
 		
 		// initialize result matrix to 0
-		initialize_result_matrix(D, matrix_dim, matrix_dim);
+		initialize_result_matrix(C, matrix_dim, matrix_dim);
 		
 		t_blocking_prefetch_mult = clock();
-		blocking_prefetch_mat_mul(A, B, D, matrix_dim, BLOCK_SIZE);
+		blocking_prefetch_mat_mul(A, B, C, matrix_dim, BLOCK_SIZE);
 		t_blocking_prefetch_mult = clock() - t_blocking_prefetch_mult;
 
 		time_blocking_prefetch_mult = ((double)t_blocking_prefetch_mult) / CLOCKS_PER_SEC; // in seconds
 		printf("Blocking with prefetching matrix multiplication took %f seconds to execute \n", time_blocking_prefetch_mult);
 		printf("Normalized performance: %f \n\n", time_normal_mult / time_blocking_prefetch_mult);
-		// verify_correctness(C, D, matrix_dim);
 	#endif
 
 	#ifdef OPTIMIZE_SIMD_PREFETCH
 		// Bonus Task 3: perform matrix multiplication using SIMD instructions along with software prefetching
 		
 		// initialize result matrix to 0
-		initialize_result_matrix(D, matrix_dim, matrix_dim);
+		initialize_result_matrix(C, matrix_dim, matrix_dim);
 		
 		t_simd_prefetch_mult = clock();
-		simd_prefetch_mat_mul(A, B, D, matrix_dim);
+		simd_prefetch_mat_mul(A, B, C, matrix_dim);
 		t_simd_prefetch_mult = clock() - t_simd_prefetch_mult;
 
 		time_simd_prefetch_mult = ((double)t_simd_prefetch_mult) / CLOCKS_PER_SEC; // in seconds
 		printf("SIMD with prefetching matrix multiplication took %f seconds to execute \n", time_simd_prefetch_mult);
 		printf("Normalized performance: %f \n\n", time_normal_mult / time_simd_prefetch_mult);
-		// verify_correctness(C, D, matrix_dim);
 	#endif
 
 	#ifdef OPTIMIZE_BLOCKING_SIMD_PREFETCH
 		// Bonus Task 4: perform matrix multiplication using blocking, SIMD instructions and software prefetching
 		
 		// initialize result matrix to 0
-		initialize_result_matrix(D, matrix_dim, matrix_dim);
+		initialize_result_matrix(C, matrix_dim, matrix_dim);
 		
 		t_blocking_simd_prefetch_mult = clock();
-		blocking_simd_prefetch_mat_mul(A, B, D, matrix_dim, BLOCK_SIZE);
+		blocking_simd_prefetch_mat_mul(A, B, C, matrix_dim, BLOCK_SIZE);
 		t_blocking_simd_prefetch_mult = clock() - t_blocking_simd_prefetch_mult;
 
 		time_blocking_simd_prefetch_mult = ((double)t_blocking_simd_prefetch_mult) / CLOCKS_PER_SEC; // in seconds
 		printf("Blocking with SIMD and prefetching matrix multiplication took %f seconds to execute \n", time_blocking_simd_prefetch_mult);
 		printf("Normalized performance: %f \n\n", time_normal_mult / time_blocking_simd_prefetch_mult);
-		// verify_correctness(C, D, matrix_dim);
 	#endif
 
 		// free allocated memory
 		free(A);
 		free(B);
 		free(C);
-		free(D);
 
 		return 0;
 	}
